@@ -5,13 +5,15 @@ var secondOperand = "";
 var operator = "";
 var result = "";
 
+var prevSecondOperand = "";
+var prevOperator = "";
+
 var isNewOperation = true;
 
 // refresh display on load
 $(function() {
   $("#display").val("");
 });
-
 
 // add digits to first and second operands
 $("button[id^='button']").click(function() {
@@ -31,7 +33,7 @@ $(".operator").click(function() {
   // if there is already a second operand in place, do the caclulation
   // first
   if (secondOperand !== "") {
-    calculateResult();
+    calculateResult(firstOperand, secondOperand, operator);
   }
 
   // register the latest operator
@@ -42,31 +44,37 @@ $(".operator").click(function() {
 
 // calculate the results whenever the equal button is pressed
 $("#equalsButton").click(function() {
-  if (operator !== "") {
-    calculateResult();
+  if (operator !== "" && secondOperand !== "") {
+    calculateResult(firstOperand, secondOperand, operator);
+    isNewOperation = true;
+  } else if (prevSecondOperand !== "" && prevOperator !== "") {
+    calculateResult(firstOperand, prevSecondOperand, prevOperator);
     isNewOperation = true;
   }
 });
 
-function calculateResult() {
-  if (firstOperand === "") {
-    firstOperand = result;
+function calculateResult(firstOp, secondOp, op) {
+  if (firstOp === "") {
+    firstOp = result;
   }
 
-  var firstNo = Number(firstOperand);
-  var secondNo = Number(secondOperand);
+  var firstNo = Number(firstOp);
+  var secondNo = Number(secondOp);
 
-  if (operator === "+") {
+  if (op === "+") {
     result = firstNo + secondNo;
-  } else if (operator === "-") {
+  } else if (op === "-") {
     result = firstNo - secondNo;
-  } else if (operator === "*") {
+  } else if (op === "*") {
     result = firstNo * secondNo;
   } else {
     result = firstNo / secondNo;
   }
 
   $("#display").val(result);
+  prevSecondOperand = secondOp;
+  prevOperator = op;
+
   firstOperand = "";
   secondOperand = "";
   operator = "";
@@ -96,4 +104,7 @@ $("#clearButton").click(function() {
   operator = "";
   result = "";
   isNewOperation = true;
+
+  prevSecondOperand = "";
+  prevOperator = "";
 });
