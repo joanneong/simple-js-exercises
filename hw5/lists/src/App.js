@@ -38,7 +38,14 @@ class App extends Component {
    * the state, this function  should then re-render this App component.
    */
   handleAddItem(s) {
-      // Implement this function!
+    var currArr = this.state.items[s.newItem.name];
+    currArr.push(s.newItem.newObj);
+    this.setState({
+      items: {
+        ...this.state.items,
+        [s.newItem.name]: currArr 
+      }
+    });
   }
 
   /**
