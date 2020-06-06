@@ -35,7 +35,7 @@ app.use('/findAnimals', (req, res) => {
         && req.query.gender === undefined) {
         res.json({});
     } else {
-        Animal.find(query, { traits: 0 }, (err, animals) => {
+        Animal.find(query, { traits: 0, _id: 0, __v: 0 }, (err, animals) => {
             console.log(animals);
             if (err || animals.length === 0) {
                 res.json({});
@@ -90,9 +90,9 @@ app.use('/calculatePrice', (req, res) => {
         }
 
         if (allIds[i] in allMatching) {
-            allMatching[allIds[i]] += allQty[i];
+            allMatching[allIds[i]] += parseInt(allQty[i]);
         } else {
-            allMatching[allIds[i]] = allQty[i];
+            allMatching[allIds[i]] = parseInt(allQty[i]);
         }
     }
     
