@@ -73,6 +73,57 @@ app.use('/animalsYoungerThan', (req, res) => {
     });
 });
 
+app.use('/calculatePrice', (req, res) => {
+    var allIds = req.query.id;
+    var allQty = req.query.qty;
+
+    if ((allIds === undefined && allQty === undefined)
+        || (allIds.length !== allQty.length)) {
+            res.json({});
+            return;
+    }
+
+    var allMatching = {};
+    for (var i = 0; i < allIds.length; i++) {
+        if (isNaN(allQty[i]) || allQty[i] < 1) {
+            continue;
+        }
+
+        if (allIds[i] in allMatching) {
+            allMatching[allIds[i]] += allQty[i];
+        } else {
+            allMatching[allIds[i]] = allQty[i];
+        }
+    }
+    
+    var result = {
+        totalPrice: 0, 
+        items: []
+    };
+
+    Toy.find({ id: { $in: Object.keys(allMatching) } }, (err, allToys) => {
+        if (err || allToys.length === 0) {
+            res.json(result);
+        } else {
+            allToys.forEach(toy => {
+                var currId = toy.id;
+                var currPrice = toy.price;
+                var currQty = allMatching[currId];
+                var currTotal = currPrice * currQty;
+
+                result.totalPrice += currPrice * currQty;
+                result.items.push({
+                    item: currId,
+                    qty: currQty,
+                    subtotal: currTotal
+                });
+            });
+            res.json(result);
+        }
+    });
+
+});
+
 app.use('/', (req, res) => {
 	res.json({ msg : 'It works!' });
 });

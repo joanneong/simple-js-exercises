@@ -4,3 +4,8 @@ db.animals.insertMany([
   { name: "Garfield", species: "Cat", breed: "Tabby", gender: "male", age: 39, traits: ["lazy", "hungry"] },
   { name: "Felix", species: "Cat", breed: "Tuxedo", gender: "male", age: 98, traits: ["funny", "loyal"] },
 ])
+
+db.toys.insertMany([
+  { id: "123", name: "Dog chew toy", price: 10.99 },
+  { id: "456", name: "Dog pillow", price: 25.99}
+])
