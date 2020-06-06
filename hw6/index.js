@@ -31,8 +31,6 @@ app.use('/findAnimals', (req, res) => {
         query.gender = req.query.gender;
     }
 
-    console.log(query);
-
     if (req.query.species === undefined && req.query.trait === undefined
         && req.query.gender === undefined) {
         res.json({});
@@ -46,6 +44,33 @@ app.use('/findAnimals', (req, res) => {
             }
         });
     }
+});
+
+app.use('/animalsYoungerThan', (req, res) => {
+    var query = {};
+
+    if (!req.query.age || isNaN(req.query.age)) {
+        res.json({});
+        return;
+    }
+
+    if (req.query.age) {
+        query.age = { $lt: req.query.age };
+    }
+
+    Animal.find(query, (err, animals) => {
+        if (err) {
+            res.type('html').status(500);
+            res.send("Error: " + err);
+        } else if (animals.length === 0) {
+            res.json({ count: 0 });
+        } else {
+            res.json({
+                count: animals.length,
+                names: animals.map(animal => animal.name)
+            });
+        }
+    });
 });
 
 app.use('/', (req, res) => {
